@@ -59,10 +59,10 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: .
+          #context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
