@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REGISTRY_IMAGE: soum-takuya/ubuntu
+  REGISTRY_IMAGE: takuya-isbs/ubuntu
   #IMAGE_NAME: ubuntu
 
 jobs:
@@ -28,9 +28,8 @@ jobs:
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
-      ### checkouted by docker/build-push-action
-      # - name: Checkout
-      #   uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
       - name: Docker meta
         id: meta
