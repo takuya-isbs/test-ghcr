@@ -8,11 +8,14 @@ on:
     branches: [ main ]
     # update version tag
     tags: [ '*.*.*' ]
-
+    # paths:
+    #   - 'src/**'
+    #   - 'Dockerfile'
 env:
   REGISTRY: ghcr.io
   #IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: takuya-isbs/ubuntu
+  # update "stable" tag
   STABLE_VERSION: v1.
 
 jobs:

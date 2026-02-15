@@ -1,11 +1,17 @@
 # test-ghcr
 
-## "latest"
+## main branch
 
-- git push origin main branch
+- `git push origin main`
 - PR and merge to main branch
+- Generated Docker image tag: latest, main
 
-## "release" and "X.Y.Z" tag
+## Release with vX.Y.Z tag
 
-- Release
-- tag: "X.Y.Z"
+- GitHub Release
+- Git tag: "vX.Y.Z"
+- Generated Docker image tag: latest, main, X.Y, X.Y.Z, stable
+
+## Change stable version
+
+- change STABLE_VERSION
