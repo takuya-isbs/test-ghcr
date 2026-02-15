@@ -8,14 +8,12 @@ on:
     branches: [ main ]
     # update version tag
     tags: [ '*.*.*' ]
-  # release:
-  #   # update "stable" tag after release
-  #   types: [ published ]
 
 env:
   REGISTRY: ghcr.io
   #IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: takuya-isbs/ubuntu
+  STABLE_VERSION: 1.
 
 jobs:
   build:
@@ -122,8 +120,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=stable,enable=${{ github.event_name == 'release' }}
-            # set latest tag for default branch
+            type=raw,value=stable,enable=${{ startsWith(github.ref, format('refs/tags/{0}', env.STABLE_VERSION)) }}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Create manifest list and push
