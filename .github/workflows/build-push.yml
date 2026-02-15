@@ -13,7 +13,7 @@ env:
   REGISTRY: ghcr.io
   #IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: takuya-isbs/ubuntu
-  STABLE_VERSION: 1.
+  STABLE_VERSION: v1.
 
 jobs:
   build:
