@@ -4,7 +4,7 @@ name: Build and push image to ghcr.io
 # https://docs.github.com/ja/enterprise-cloud@latest/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
 on:
   push:
-    branches: [ '*' ]
+    branches: [ '**' ]
     # To update version tag
     tags: [ '*.*.*' ]
     paths:
