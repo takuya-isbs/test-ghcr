@@ -23,7 +23,6 @@ env:
   IMAGE_NAME: takuya-isbs/ubuntu
   # update "stable" tag
   STABLE_VERSION: v1.
-  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
 jobs:
   build:
@@ -94,7 +93,7 @@ jobs:
       - name: Export digest
         if: |
           github.event_name != 'pull_request' && (
-            github.ref_name == env.DEFAULT_BRANCH ||
+            github.ref_name == github.event.repository.default_branch ||
             github.ref_type == 'tag'
           )
         run: |
@@ -105,7 +104,7 @@ jobs:
       - name: Upload digest
         if: |
           github.event_name != 'pull_request' && (
-            github.ref_name == env.DEFAULT_BRANCH ||
+            github.ref_name == github.event.repository.default_branch ||
             github.ref_type == 'tag'
           )
         uses: actions/upload-artifact@v4
@@ -121,7 +120,7 @@ jobs:
       - build
     if: |
       github.event_name != 'pull_request' && (
-        github.ref_name == env.DEFAULT_BRANCH ||
+        github.ref_name == github.event.repository.default_branch ||
         github.ref_type == 'tag'
       )
     steps:
