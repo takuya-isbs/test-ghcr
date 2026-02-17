@@ -10,12 +10,14 @@ on:
     paths:
       - '.github/**'
       - 'src/**'
+      - 'shell.sh'
       - 'Dockerfile'
   pull_request:
     branches: [ 'main' ]
     paths:
       - '.github/**'
       - 'src/**'
+      - 'shell.sh'
       - 'Dockerfile'
 env:
   REGISTRY: ghcr.io
