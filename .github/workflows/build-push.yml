@@ -8,9 +8,9 @@ on:
     branches: [ main ]
     # update version tag
     tags: [ '*.*.*' ]
-    # paths:
-    #   - 'src/**'
-    #   - 'Dockerfile'
+    paths:
+      - 'src/**'
+      - 'Dockerfile'
 env:
   REGISTRY: ghcr.io
   #IMAGE_NAME: ${{ github.repository }}
@@ -68,6 +68,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           #context: .
+          file: Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -76,6 +77,12 @@ jobs:
           # https://docs.docker.com/build/ci/github-actions/cache/#github-cache
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Test image
+        run: |
+          docker run --rm \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }} \
+            sh -c "sh /test.sh"
 
       - name: Export digest
         run: |
@@ -123,8 +130,8 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=stable,enable=${{ startsWith(github.ref, format('refs/tags/{0}', env.STABLE_VERSION)) }}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, format('refs/tags/{0}', env.STABLE_VERSION)) }}
+            type=raw,value=develop,enable={{is_default_branch}}
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
