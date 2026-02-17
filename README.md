@@ -1,9 +1,9 @@
 # test-ghcr
 
-## main branch
+## Update main branch
 
-- `git push origin main`
-- PR and merge to main branch
+- `git push origin develop`
+- Create PR and merge to main branch from develop branch
 - Generated Docker image tag: latest, main
 
 ## Release with vX.Y.Z tag
@@ -14,4 +14,14 @@
 
 ## Change stable version
 
-- change STABLE_VERSION
+- change STABLE_VERSION in .github/workflows/build-push.yml
+
+## Test on local
+
+- Docker:
+  - `make`
+    - same as `make build test`
+- Apple container:
+  - `make DOCKER_CMD=container`
+- Podman
+  - `make DOCKER_CMD=podman`
