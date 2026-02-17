@@ -6,7 +6,14 @@ DOCKER_IMAGE="$1"
 shift
 
 DOCKER_CMD="${DOCKER_CMD:-docker}"
-RUN=("${DOCKER_CMD}" "run" "-it" "--rm" "--init")
+RUN=("${DOCKER_CMD}" "run" "--rm" "--init")
+
+if [ -t 0 ]; then
+    # stdin is TTY
+    RUN+=("-it")
+else
+    RUN+=("-i")
+fi
 
 RUN+=("--hostname" "test-ghcr")
 RUN+=("-v" "${HOME}:/home/"$(id -un)"/HOST_HOME/:rw")
