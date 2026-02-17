@@ -8,11 +8,13 @@ on:
     # To update version tag
     tags: [ '*.*.*' ]
     paths:
+      - '.github/**'
       - 'src/**'
       - 'Dockerfile'
   pull_request:
     branches: [ 'main' ]
     paths:
+      - '.github/**'
       - 'src/**'
       - 'Dockerfile'
 env:
