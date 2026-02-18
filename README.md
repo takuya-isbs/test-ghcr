@@ -3,14 +3,15 @@
 ## Update main branch
 
 - `git push origin develop`
+  - Generated Docker image tag: develop
 - Create PR and merge to main branch from develop branch
-- Generated Docker image tag: latest, main
+- Generated Docker image tag: main
 
 ## Release with vX.Y.Z tag
 
 - GitHub Release
-- Git tag: "vX.Y.Z"
-- Generated Docker image tag: latest, main, X.Y, X.Y.Z, stable
+  - Set git tag: "vX.Y.Z"
+- Generated Docker image tag: latest, main, X.Y, X.Y.Z
 
 ## Change stable version
 
@@ -25,3 +26,5 @@
   - `make DOCKER_CMD=container`
 - Podman
   - `make DOCKER_CMD=podman`
+
+![demo](./demo.gif)

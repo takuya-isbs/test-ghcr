@@ -6,7 +6,7 @@ DOCKER_IMAGE="$1"
 shift
 
 DOCKER_CMD="${DOCKER_CMD:-docker}"
-RUN=("${DOCKER_CMD}" "run" "--rm" "--init")
+RUN=("${DOCKER_CMD}" "run" "--rm")
 
 if [ -t 0 ]; then
     # stdin is TTY
@@ -15,11 +15,23 @@ else
     RUN+=("-i")
 fi
 
-RUN+=("--hostname" "test-ghcr")
 RUN+=("-v" "${HOME}:/home/"$(id -un)"/HOST_HOME/:rw")
 RUN+=("--env" "USER_UID="$(id -u))
 RUN+=("--env" "USER_GID="$(id -g))
 RUN+=("--env" "USER_NAME="$(id -un))
 RUN+=("--env" "USER_GROUP="$(id -gn))
+RUN+=("--name" "test-ghcr")
+
+DOCKER_CMD_TYPE=${DOCKER_CMD_TYPE:-$(basename "${DOCKER_CMD}")}
+case "${DOCKER_CMD_TYPE}" in
+    docker|podman)
+        RUN+=("--init")
+        RUN+=("--hostname" "test-ghcr")
+        ;;
+    container)
+        ;;
+    *)
+        ;;
+esac
 
 exec "${RUN[@]}" "$DOCKER_IMAGE" "$@"
