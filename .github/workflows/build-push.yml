@@ -23,11 +23,29 @@ env:
   REGISTRY: ghcr.io
   #IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: takuya-isbs/ubuntu
-  # update "stable" tag
+  # For "latest" tag
   STABLE_VERSION: v1.
 
 jobs:
+  condition:
+    runs-on: ubuntu-latest
+    outputs:
+      is_eligible: ${{ steps.check_branch.outputs.is_eligible }}
+    steps:
+      - id: check_branch
+        run: |
+          if [[ "${{ github.event_name }}" != "pull_request" && \
+                ( "${{ github.ref_name }}" == "${{ github.event.repository.default_branch }}" || \
+                  "${{ github.ref_name }}" == "develop" || \
+                  "${{ github.ref_type }}" == "tag" ) ]]; then
+            echo "is_eligible=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_eligible=false" >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs:
+      - condition
     strategy:
       fail-fast: false
       matrix:
@@ -93,22 +111,14 @@ jobs:
             sh -c "sh /test.sh"
 
       - name: Export digest
-        if: |
-          github.event_name != 'pull_request' && (
-            github.ref_name == github.event.repository.default_branch ||
-            github.ref_type == 'tag'
-          )
+        if needs.condition.outputs.is_eligible == 'true'
         run: |
           mkdir -p ${{ runner.temp }}/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
       - name: Upload digest
-        if: |
-          github.event_name != 'pull_request' && (
-            github.ref_name == github.event.repository.default_branch ||
-            github.ref_type == 'tag'
-          )
+        if needs.condition.outputs.is_eligible == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ env.PLATFORM_PAIR }}
@@ -119,12 +129,9 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     needs:
+      - condition
       - build
-    if: |
-      github.event_name != 'pull_request' && (
-        github.ref_name == github.event.repository.default_branch ||
-        github.ref_type == 'tag'
-      )
+    if needs.condition.outputs.is_eligible == 'true'
     steps:
       - name: Download digests
         uses: actions/download-artifact@v4
@@ -154,7 +161,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable=${{ startsWith(github.ref, format('refs/tags/{0}', env.STABLE_VERSION)) }}
-            type=raw,value=develop,enable={{is_default_branch}}
+            # type=raw,value=main,enable={{is_default_branch}}
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
